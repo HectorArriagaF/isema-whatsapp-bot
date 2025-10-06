@@ -1,10 +1,13 @@
 {
   "name": "isema-whatsapp-bot",
   "version": "1.0.0",
+  "description": "WhatsApp Bot for ISEMA",
+  "main": "app.js",
   "scripts": {
     "start": "node app.js"
   },
   "dependencies": {
-    "express": "^4.18.2"
+    "express": "^4.18.2",
+    "node-fetch": "^3.3.2"
   }
 }
