@@ -32,14 +32,26 @@ app.post('/', async (req, res) => {
   console.log(`\n\nWebhook received ${timestamp}\n`);
   console.log(JSON.stringify(req.body, null, 2));
   
-  // ✅ NUEVO: Enviar mensajes a n8n para el AI Agent
+  // ✅ CORREGIDO: Manejar botones y texto
   try {
     if (req.body.entry?.[0]?.changes?.[0]?.value?.messages) {
+      const message = req.body.entry[0].changes[0].value.messages[0];
+      let mensajeTexto = '';
+
+      // Manejar diferentes tipos de mensaje
+      if (message.type === 'button') {
+        mensajeTexto = message.button?.text || 'Botón sin texto';
+      } else if (message.type === 'text') {
+        mensajeTexto = message.text?.body || 'Texto vacío';
+      } else {
+        mensajeTexto = `Tipo de mensaje: ${message.type}`;
+      }
+
       const messageData = {
         telefono: req.body.entry[0].changes[0].value.contacts[0].wa_id,
-        mensaje: req.body.entry[0].changes[0].value.messages[0].text?.body,
+        mensaje: mensajeTexto,
         sessionId: `whatsapp_${req.body.entry[0].changes[0].value.contacts[0].wa_id}`,
-        chatInput: req.body.entry[0].changes[0].value.messages[0].text?.body
+        chatInput: mensajeTexto
       };
       
       console.log('📤 Enviando a n8n:', messageData);
@@ -54,6 +66,12 @@ app.post('/', async (req, res) => {
       });
       
       console.log('✅ Enviado a n8n. Status:', response.status);
+      
+      // Si hay error, mostrar detalles
+      if (!response.ok) {
+        const errorText = await response.text();
+        console.log('❌ Error de n8n:', errorText);
+      }
     }
   } catch (error) {
     console.error('❌ Error enviando a n8n:', error);
