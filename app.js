@@ -11,8 +11,13 @@ app.use(express.json());
 const port = process.env.PORT || 3000;
 const verifyToken = process.env.VERIFY_TOKEN;
 
-// Import fetch for Node.js
-const fetch = (...args) => import('node-fetch').then(({default: fetch}) => fetch(...args));
+// CORRECCIÓN: Importar node-fetch correctamente
+let fetch;
+import('node-fetch').then(module => {
+  fetch = module.default;
+}).catch(err => {
+  console.error('Error importing node-fetch:', err);
+});
 
 // Route for GET requests
 app.get('/', (req, res) => {
@@ -28,6 +33,12 @@ app.get('/', (req, res) => {
 
 // Route for POST requests
 app.post('/', async (req, res) => {
+  // CORRECCIÓN: Verificar que fetch esté disponible
+  if (!fetch) {
+    console.log('❌ node-fetch no está disponible aún');
+    return res.status(200).end();
+  }
+
   const timestamp = new Date().toISOString().replace('T', ' ').slice(0, 19);
   console.log(`\n\nWebhook received ${timestamp}\n`);
   console.log(JSON.stringify(req.body, null, 2));
