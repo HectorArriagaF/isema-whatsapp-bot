@@ -59,7 +59,7 @@ app.post('/', async (req, res) => {
       }
 
       const messageData = {
-        telefono: req.body.entry[0].changes[0].value.contacts[0].wa_id,
+        telefono: +req.body.entry[0].changes[0].value.contacts[0].wa_id,
         mensaje: mensajeTexto,
         sessionId: `whatsapp_${req.body.entry[0].changes[0].value.contacts[0].wa_id}`,
         chatInput: mensajeTexto
