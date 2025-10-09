@@ -68,7 +68,7 @@ app.post('/', async (req, res) => {
       console.log('📤 Enviando a n8n:', messageData);
       
       // Enviar a n8n
-      const response = await fetch('https://isema.app.n8n.cloud/webhook/whatsapp-messages', {
+      const response = await fetch('https://isema.app.n8n.cloud/webhook/98bdaa99-9afa-4cfc-b19b-0257d9df3dd7', {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json',
